@@ -1,12 +1,12 @@
 import AliceCarousel from "react-alice-carousel";
 import ProductCard from "../ProductCard/ProductCard";
-import "./ProductCardDisplay.css"
+import "./ProductCardDisplay.css";
 import { Button } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
 import { useState } from "react";
 
-const ProductDisplay = ({ section,data }) => {
+const ProductDisplay = ({ section, data }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const responsive = {

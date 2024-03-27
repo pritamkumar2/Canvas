@@ -63,9 +63,13 @@ const Home = () => {
   return (
     <>
       <Carousel />
-      <div className=" bg-black h-[7%] w-full">
+      <div className=" w-[95%] mx-auto space-y-5">
         <ProductDisplay section={"painting"} data={productInfo} />
-        <HomePageCatalog/>
+        <br />
+        <br />
+        <br />
+
+        <HomePageCatalog />
       </div>
       <div>Home</div>
     </>
