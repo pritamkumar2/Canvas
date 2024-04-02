@@ -1,18 +1,18 @@
 import React from "react";
-
+import "./homeCatalog.css";
 const HomePageCatalog = () => {
   const images = [
-    "https://image.lexica.art/full_webp/047ee952-6da5-4d45-869e-18ada6aeb023",
-    "https://image.lexica.art/full_webp/047ee952-6da5-4d45-869e-18ada6aeb023",
-    "https://image.lexica.art/full_webp/047ee952-6da5-4d45-869e-18ada6aeb023",
-    "https://image.lexica.art/full_webp/047ee952-6da5-4d45-869e-18ada6aeb023",
-    "https://image.lexica.art/full_webp/047ee952-6da5-4d45-869e-18ada6aeb023",
+    "https://i.imgur.com/nX2Ojqo.png",
+    "https://i.imgur.com/VexZgSN.png",
+    "https://i.imgur.com/uF1lv5P.png",
+    "https://i.imgur.com/tq2NVBY.png",
+    "https://i.imgur.com/2yWYyhn.png",
   ];
 
   return (
     <div className=" flex flex-wrap items-center justify-center space-x-5">
       {images.map((image, index) => (
-        <div key={index} className=" relative   -z-1 ">
+        <div key={index} className=" catalog relative   -z-1 ">
           <img
             src={image}
             alt={`Image ${index + 1}`}

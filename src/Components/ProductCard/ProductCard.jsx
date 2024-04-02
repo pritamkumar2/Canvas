@@ -6,7 +6,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <div
-      // onClick={() => navigate(`/product/${product?._id || product?.id}`)}
+      onClick={() => navigate(`/singleProduct/${product?._id || product?.id}`)}
       className="cursor-pointer transform hover:scale-105 transition-transform duration-300 drop-shadow-2xl flex flex-col items-center rounded-lg shadow-lg overflow-hidden w-[8rem] h-[10rem] md:w-[15rem] md:h-[18rem] mx-3 relative"
     >
       <div className="h-full w-full object-fill">
