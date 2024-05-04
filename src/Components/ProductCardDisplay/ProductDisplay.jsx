@@ -43,7 +43,7 @@ const ProductDisplay = ({ section, data }) => {
   const items = data
     .slice(activeIndex, activeIndex + responsive[1024].items)
     .map((item, index) => <ProductCard key={index} product={item} />);
-
+  console.log(items);
   return (
     <div className="relative">
       <h2 className="text-2xl text-start font-bold text-gray-800 py-5">

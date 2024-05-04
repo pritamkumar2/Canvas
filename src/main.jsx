@@ -5,4 +5,26 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+import AppProvider from "./ContextApi/AppProvider.jsx";
+import { ToastContainer } from "react-toastify";
+import { FilterContextProvider } from "./ContextApi/Filter_context.jsx";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <AppProvider>
+    <FilterContextProvider>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      <App />
+    </FilterContextProvider>
+  </AppProvider>
+);

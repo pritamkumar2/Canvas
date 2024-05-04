@@ -1,18 +1,4 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
@@ -22,6 +8,9 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+import { useAuth } from "../ContextApi/AppProvider";
+import { useFilterContext } from "../ContextApi/Filter_context";
+import AllProductCard from "../Components/AllProductPageCard/AllProductCard";
 
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
@@ -29,13 +18,6 @@ const sortOptions = [
   { name: "Newest", href: "#", current: false },
   { name: "Price: Low to High", href: "#", current: false },
   { name: "Price: High to Low", href: "#", current: false },
-];
-const subCategories = [
-  { name: "Totes", href: "#" },
-  { name: "Backpacks", href: "#" },
-  { name: "Travel Bags", href: "#" },
-  { name: "Hip Bags", href: "#" },
-  { name: "Laptop Sleeves", href: "#" },
 ];
 const filters = [
   {
@@ -81,6 +63,19 @@ function classNames(...classes) {
 
 export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const { filter_products } = useFilterContext();
+  const { dispatch } = useFilterContext();
+  console.log(filter_products);
+  const uniqueCategories = [
+    ...new Set(
+      filter_products.map((item) => item.category.trim().toLowerCase())
+    ),
+  ];
+
+  const handleSortChange = (sortValue) => {
+    dispatch({ type: "GET_SORT_VALUE", payload: sortValue });
+  };
 
   return (
     <div className="bg-white">
@@ -136,11 +131,18 @@ export default function Product() {
                       role="list"
                       className="px-2 py-3 font-medium text-gray-900"
                     >
-                      {subCategories.map((category) => (
-                        <li key={category.name}>
-                          <a href={category.href} className="block px-2 py-3">
-                            {category.name}
-                          </a>
+                      {uniqueCategories.map((data) => (
+                        <li
+                          key={data}
+                          className="cursor-pointer transform transition-transform duration-300 hover:scale-95"
+                          onClick={() => {
+                            dispatch({
+                              type: "SET_CATEGORIES_FILTER",
+                              payload: data,
+                            });
+                          }}
+                        >
+                          <p>{data}</p>
                         </li>
                       ))}
                     </ul>
@@ -250,6 +252,9 @@ export default function Product() {
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm"
                               )}
+                              onClick={() => {
+                                handleSortChange(option.name);
+                              }}
                             >
                               {option.name}
                             </a>
@@ -292,9 +297,18 @@ export default function Product() {
                   role="list"
                   className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900"
                 >
-                  {subCategories.map((category) => (
-                    <li key={category.name}>
-                      <a href={category.href}>{category.name}</a>
+                  {uniqueCategories.map((data) => (
+                    <li
+                      key={data}
+                      className="cursor-pointer transform transition-transform duration-300 hover:scale-95"
+                      onClick={() => {
+                        dispatch({
+                          type: "SET_CATEGORIES_FILTER",
+                          payload: data,
+                        });
+                      }}
+                    >
+                      <p>{data}</p>
                     </li>
                   ))}
                 </ul>
@@ -357,9 +371,15 @@ export default function Product() {
                   </Disclosure>
                 ))}
               </form>
-
-              {/* Product grid */}
-              <div className="lg:col-span-3">{/* Your content */}</div>
+              <div className="lg:col-span-3 w-full">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+                  {filter_products.map((products, i) => (
+                    <div key={products?._id} className="flex justify-center">
+                      <AllProductCard key={i} product={products} />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
         </main>

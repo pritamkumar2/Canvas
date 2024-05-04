@@ -1,34 +1,25 @@
 import React from "react";
-import "./similerProduct.css";
-import { useNavigate } from "react-router-dom";
+import { FaHeart } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import "./allProductPage.css";
 
-const SimilerProduct = (product) => {
-
-  const navigate = useNavigate();
-
-  const handleNavigate = () => {
-    navigate(`/product/${product?._id}`);
-  };
-
+const AllProductCard = ({ product }) => {
   return (
-    <div
-      onClick={handleNavigate}
-      className="productCard rounded-t-2xl shadow-xl w-full md:w-[15rem] mx-auto border m-3 transition-all cursor-pointer"
-    >
+    <div className="productCard rounded-t-2xl shadow-xl w-full md:w-[15rem] mx-auto border m-3 transition-all cursor-pointer text-black">
       <div className="h-48 md:h-[20rem]">
         <img
           className="h-full rounded-t-2xl w-full object-cover object-center"
           src={product?.imageUrl}
-          alt={product?.name}
+          alt="product image"
         />
       </div>
       <div className="textPart rounded-t-2xl border-b-2 border-[#ffec45] p-3">
         <div className="flex flex-col">
           <p className="font-bold opacity-60 text-sm md:text-base">
-            {product?.description}
+            {product?.name}
           </p>
           <p className="text-sm md:text-base overflow-hidden max-h-[5vh]">
-            {product?.name}
+            {product?.description}
           </p>
           <p className="font-semibold">₹{product?.price?.discount}</p>
           <div className="flex items-center">
@@ -36,7 +27,7 @@ const SimilerProduct = (product) => {
               ₹{product?.price?.regular}
             </p>
             <p className="text-green-600 font-semibold ml-2">
-              {product?.discountPersent}% off
+              {product?.discountPercent}% off
             </p>
           </div>
         </div>
@@ -45,4 +36,4 @@ const SimilerProduct = (product) => {
   );
 };
 
-export default SimilerProduct;
+export default AllProductCard;

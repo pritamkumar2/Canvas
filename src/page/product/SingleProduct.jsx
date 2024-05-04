@@ -5,16 +5,12 @@ import RateSection from "../../Components/Review&Rating/RateSection";
 import ReviewsSection from "../../Components/Review&Rating/ReviewsSection";
 import ProductDetailSection from "../../Components/ProductDetail/ProductDetailSection";
 import SimilarProduct from "../../Components/SimilerProduct/SimilerProduct";
-
+import { useAuth } from "../../ContextApi/AppProvider";
 const SingleProduct = () => {
   const [showRating, setShowRating] = useState(true);
   const [showReviews, setShowReviews] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
-
-const data = {
-  
-}
-
+  const { products } = useAuth();
 
   const handleRateClick = (e) => {
     e.preventDefault();
@@ -41,17 +37,21 @@ const data = {
     <div>
       <div className="text-gray-900 py-4 bg-white">
         <div className="container mx-auto px-6">
-          <div className="py-3">
+          <div className="py-3 ">
             <ProductDetailSection />
             {/* Rating, Reviews, and Feedback Buttons */}
-            <div className="mt-6 flex justify-center center bg-gray-300 ">
-              <button onClick={handleRateClick} className="mr-4">
-                Rate
+
+            <div className="mt-6 flex justify-start items-center ">
+              <button onClick={handleRateClick} className="  button-80  ">
+                <p className="flex justify-center"> Rate</p>
               </button>
-              <button onClick={handleReviewClick} className="mr-4">
-                Review
+
+              <button onClick={handleReviewClick} className="button-80">
+                <p className="flex justify-center"> Reviews</p>
               </button>
-              <button onClick={handleFeedbackClick}>Feedback</button>
+              <button onClick={handleFeedbackClick} className="button-80 ">
+                <p className="flex justify-center"> Q/A</p>
+              </button>
             </div>
 
             {showRating && <RateSection />}
@@ -62,9 +62,19 @@ const data = {
           </div>
         </div>
 
+        <div className=" flex justify-center items-center mb-12">
+          <h3 className="font-bold text-black">Similar Product</h3>
+        </div>
         {/* similer product */}
-<SimilarProduct product={data}/>
-        
+        {products.map((product) => (
+          <SimilarProduct
+            key={product?._id}
+            imageUrl={product?.imageUrl}
+            name={product?.name}
+            price={product?.price}
+            brand={product?.brand}
+          />
+        ))}
       </div>
     </div>
   );

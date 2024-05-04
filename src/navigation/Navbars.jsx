@@ -5,7 +5,6 @@ import {
   NavbarContent,
   NavbarItem,
   Link,
-  Input,
   DropdownItem,
   DropdownTrigger,
   Dropdown,
@@ -20,8 +19,8 @@ import {
 } from "@nextui-org/react";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { AcmeLogo } from "./AcmeLogo.jsx";
-import { SearchIcon } from "./SearchIcon.jsx";
-
+import Searching from "../Components/Searching/Searching.jsx";
+import { NavLink } from "react-router-dom";
 export default function Navbars() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isLargeScreen, setIsLargeScreen] = React.useState(
@@ -58,42 +57,39 @@ export default function Navbars() {
         <Navbar isBordered>
           {/* Desktop View */}
           <NavbarContent justify="start">
-            <NavbarBrand className="mr-4">
-              <AcmeLogo />
-              <p className="hidden sm:block font-bold text-inherit">ACME</p>
-            </NavbarBrand>
+            <NavLink to="/">
+              <NavbarBrand className="mr-4">
+                <AcmeLogo />
+                <p className="hidden sm:block font-bold text-inherit">ACME</p>
+              </NavbarBrand>
+            </NavLink>
             <NavbarContent className=" start sm:flex gap-3">
               <NavbarItem>
-                <Link color="foreground" href="/">
-                  home
-                </Link>
+                <NavLink to="/" exact className="nav-link">
+                  Home
+                </NavLink>
               </NavbarItem>
               <NavbarItem isActive>
-                <Link href="products" aria-current="page" color="secondary">
+                <NavLink to="/products" className="nav-link">
                   Products
-                </Link>
+                </NavLink>
               </NavbarItem>
               <NavbarItem>
-                <Link color="foreground" href="/about">
+                <NavLink to="/about" className="nav-link">
                   About us
-                </Link>
+                </NavLink>
+              </NavbarItem>
+              <NavbarItem>
+                <NavLink to="/contact" className="nav-link">
+                  Contact us
+                </NavLink>
               </NavbarItem>
             </NavbarContent>
           </NavbarContent>
           <NavbarContent as="div" className="items-center" justify="end">
-            <Input
-              classNames={{
-                base: "max-w-full sm:max-w-[10rem] h-10",
-                mainWrapper: "h-full",
-                input: "text-small",
-                inputWrapper:
-                  "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-              }}
-              placeholder="Type to search..."
-              size="sm"
-              startContent={<SearchIcon size={12} />}
-              type="search"
-            />
+            <NavbarContent className="items-center" justify="end">
+              <Searching />
+            </NavbarContent>
 
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
@@ -128,11 +124,11 @@ export default function Navbars() {
             </Dropdown>
           </NavbarContent>
           <NavbarItem>
-            <Link href="/cart">
+            <NavLink to="/cart">
               <div className="ml-24">
                 <LocalMallIcon />
               </div>
-            </Link>
+            </NavLink>
           </NavbarItem>
         </Navbar>
       ) : (
@@ -160,42 +156,42 @@ export default function Navbars() {
               <p className="font-bold text-inherit">ACME</p>
             </NavbarBrand>
             <NavbarItem>
-              <Link color="foreground" href="#">
+              <NavLink color="foreground" to="#">
                 Features
-              </Link>
+              </NavLink>
             </NavbarItem>
             <NavbarItem isActive>
-              <Link href="#" aria-current="page">
+              <NavLink to="#" aria-current="page">
                 Customers
-              </Link>
+              </NavLink>
             </NavbarItem>
             <NavbarItem>
-              <Link color="foreground" href="#">
+              <NavLink color="foreground" to="#">
                 Integrations
-              </Link>
+              </NavLink>
             </NavbarItem>
           </NavbarContent>
 
           <NavbarContent justify="end">
             <NavbarItem className="hidden lg:flex">
-              <Link href="#">Login</Link>
+              <NavLink to="#">Login</NavLink>
             </NavbarItem>
             <NavbarItem>
-              <Button as={Link} color="warning" href="#" variant="flat">
+              <Button as={Link} color="warning" to="#" variant="flat">
                 Sign Up
               </Button>
             </NavbarItem>
             <NavbarItem>
-              <Link href="/cart">
+              <NavLink to="/cart">
                 <LocalMallIcon />
-              </Link>
+              </NavLink>
             </NavbarItem>
           </NavbarContent>
 
           <NavbarMenu>
             {menuItems.map((item, index) => (
               <NavbarMenuItem key={`${item.label}-${index}`}>
-                <Link
+                <NavLink
                   className="w-full"
                   color={
                     index === 2
@@ -204,11 +200,11 @@ export default function Navbars() {
                       ? "danger"
                       : "foreground"
                   }
-                  href={item.href}
+                  to={item.href}
                   size="lg"
                 >
                   {item.label}
-                </Link>
+                </NavLink>
               </NavbarMenuItem>
             ))}
           </NavbarMenu>

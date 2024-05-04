@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Box, Grid, LinearProgress, Rating } from "@mui/material";
+import "./rateSection.css";
 
-const RateSection = ({ rating, onRatingChange }) => {
+const RateSection = () => {
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
-
+  const [rating, setRating] = useState(null);
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -20,34 +21,79 @@ const RateSection = ({ rating, onRatingChange }) => {
 
   return (
     <div className="ratings-section flex flex-col flex-wrap">
-      <h2>Rate This Product</h2>
       <div className="mt-4">
         {!submitted ? (
           <form onSubmit={handleSubmit}>
             <div className="rate w-full">
-              <input type="radio" id="star5" name="rate" value="5" />
+              <input
+                type="radio"
+                id="star5"
+                name="rate"
+                value="5"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRating(5);
+                }}
+              />
               <label htmlFor="star5" title="text">
                 5 stars
               </label>
-              <input type="radio" id="star4" name="rate" value="4" />
+              <input
+                type="radio"
+                id="star4"
+                name="rate"
+                value="4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRating(4);
+                }}
+              />
               <label htmlFor="star4" title="text">
                 4 stars
               </label>
-              <input type="radio" id="star3" name="rate" value="3" />
+              <input
+                type="radio"
+                id="star3"
+                name="rate"
+                value="3"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRating(3);
+                }}
+              />
               <label htmlFor="star3" title="text">
                 3 stars
               </label>
-              <input type="radio" id="star2" name="rate" value="2" />
+              <input
+                type="radio"
+                id="star2"
+                name="rate"
+                value="2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRating(2);
+                }}
+              />
               <label htmlFor="star2" title="text">
                 2 stars
               </label>
-              <input type="radio" id="star1" name="rate" value="1" />
+              <input
+                type="radio"
+                id="star1"
+                name="rate"
+                value="1"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRating(1);
+                }}
+              />
               <label htmlFor="star1" title="text">
                 1 star
               </label>
             </div>
-            <div className="w-full  border-black">
+            <div className="w-full">
               <textarea
+                className="w-full p-2 border border-black"
                 placeholder="Write your review..."
                 value={comment}
                 onChange={handleCommentChange}
@@ -55,17 +101,26 @@ const RateSection = ({ rating, onRatingChange }) => {
                 cols={70}
               ></textarea>
 
-              <button type="submit" className="flex ">
+              <button type="submit" className="glitch-button">
                 Submit
               </button>
             </div>
           </form>
         ) : (
-          <p>Thank you for your review!</p>
+          <div className=" flex justify-center items-center">
+            <div class="hero">
+              <h1 class="text-reveal">
+                <span>THANK YOU FOR REVIEW</span>
+                <span aria-hidden="true">THANK YOU FOR REVIEW</span>
+              </h1>
+            </div>
+          </div>
         )}
       </div>
 
-      <Grid item xs={12} sm={5}>
+<br />
+<br />
+      <Grid item xs={12} sm={5} >
         <h1 className="text-xl font-semibold pb-1">Product Ratings</h1>
         <div className="flex items-center space-x-3 pb-10">
           <div className="flex items-center">

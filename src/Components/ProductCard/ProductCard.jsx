@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./ProductCard.css";
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
-
+  
   return (
     <div
       onClick={() => navigate(`/singleProduct/${product?._id || product?.id}`)}

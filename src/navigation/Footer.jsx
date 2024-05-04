@@ -2,8 +2,8 @@ import React from "react";
 import "./nagivation.css";
 const Footer = () => {
   return (
-    <div className="pg-footer">
-      <footer className="footer">
+    <footer>
+      <div className=" bg-[#004658]">
         <svg
           className="footer-wave-svg"
           xmlns="http://www.w3.org/2000/svg"
@@ -201,8 +201,8 @@ const Footer = () => {
             </p>
           </div>
         </div>
-      </footer>
-    </div>
+      </div>
+    </footer>
   );
 };
 
