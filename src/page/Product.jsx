@@ -64,8 +64,7 @@ function classNames(...classes) {
 export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const { filter_products } = useFilterContext();
-  const { dispatch } = useFilterContext();
+  const { filter_products, dispatch } = useFilterContext();
   console.log(filter_products);
   const uniqueCategories = [
     ...new Set(
@@ -75,6 +74,13 @@ export default function Product() {
 
   const handleSortChange = (sortValue) => {
     dispatch({ type: "GET_SORT_VALUE", payload: sortValue });
+  };
+  const handleCategoriesChange = (categories) => {
+ 
+    dispatch({
+      type: "SET_CATEGORIES_FILTER",
+      payload: categories,
+    });
   };
 
   return (
@@ -136,10 +142,7 @@ export default function Product() {
                           key={data}
                           className="cursor-pointer transform transition-transform duration-300 hover:scale-95"
                           onClick={() => {
-                            dispatch({
-                              type: "SET_CATEGORIES_FILTER",
-                              payload: data,
-                            });
+                            handleCategoriesChange(data);
                           }}
                         >
                           <p>{data}</p>
@@ -302,10 +305,7 @@ export default function Product() {
                       key={data}
                       className="cursor-pointer transform transition-transform duration-300 hover:scale-95"
                       onClick={() => {
-                        dispatch({
-                          type: "SET_CATEGORIES_FILTER",
-                          payload: data,
-                        });
+                        handleCategoriesChange(data);
                       }}
                     >
                       <p>{data}</p>

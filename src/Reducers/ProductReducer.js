@@ -12,14 +12,14 @@ const ProductReducer = (state, action) => {
         isError: true,
       };
     case "SET_API_DATA":
-      const featureData = (action?.payload?.data || []).filter(
+      const featureData = (action?.payload?.data).filter(
         (current) => current.isFeatured === true
       );
 
       return {
         ...state,
         isLoading: false,
-        products: action?.payload?.data || [],
+        products: [...action?.payload?.data] || [],
         featureProducts: featureData,
       };
 
