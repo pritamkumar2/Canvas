@@ -11,7 +11,6 @@ const initialState = {
 export const FilterContextProvider = ({ children }) => {
   const { products } = useAuth();
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log("filter context", state);
   useEffect(() => {
     if (state.sortingValue !== "lowest") {
       dispatch({ type: "SORTING_PRODUCTS", payload: products });
@@ -22,9 +21,7 @@ export const FilterContextProvider = ({ children }) => {
     dispatch({ type: "LOAD_FILTER_PRODUCTS", payload: products });
   }, [products]);
 
-  useEffect(() => {
-    dispatch({ type: "SORTING_PRODUCTS", payload: products });
-  }, [state.sortingValue]);
+
   return (
     <FilterContext.Provider value={{ ...state, dispatch }}>
       {children}

@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import "./product.css";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
@@ -11,7 +12,7 @@ import {
 import { useAuth } from "../ContextApi/AppProvider";
 import { useFilterContext } from "../ContextApi/Filter_context";
 import AllProductCard from "../Components/AllProductPageCard/AllProductCard";
-
+import PriceSlider from "../Components/PriceSlider/PriceSlider";
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
   { name: "Best Rating", href: "#", current: false },
@@ -65,21 +66,26 @@ export default function Product() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const { filter_products, dispatch } = useFilterContext();
-  console.log(filter_products);
+  const { products } = useAuth();
+
   const uniqueCategories = [
-    ...new Set(
-      filter_products.map((item) => item.category.trim().toLowerCase())
-    ),
+    ...new Set(products.map((item) => item.category.trim().toLowerCase())),
   ];
 
   const handleSortChange = (sortValue) => {
     dispatch({ type: "GET_SORT_VALUE", payload: sortValue });
   };
   const handleCategoriesChange = (categories) => {
- 
     dispatch({
       type: "SET_CATEGORIES_FILTER",
       payload: categories,
+    });
+  };
+
+  const handleClearFilters = (updatedFilters) => {
+    dispatch({
+      type: "CLEAR_FILTERS",
+      payload: products,
     });
   };
 
@@ -370,6 +376,23 @@ export default function Product() {
                     )}
                   </Disclosure>
                 ))}
+              
+                  <PriceSlider />
+                
+         
+           
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleClearFilters();
+                    }}
+                    className="text-sm text-black bg-orange-300 mt-4 button_90  "
+                  >
+                  
+                    Clear Filters
+                  </button>
+                  
+               
               </form>
               <div className="lg:col-span-3 w-full">
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">

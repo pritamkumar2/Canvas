@@ -11,7 +11,8 @@ import StarRating from "../Review&Rating/StarRating";
 import "./productDetails.css";
 const ProductDetailSection = () => {
   const { id } = useParams();
-  const { api, getSingleProduct, isSingleLoading, singleProduct } = useAuth();
+  const { api, getSingleProduct, isSingleLoading, isLoading, singleProduct } =
+    useAuth();
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedQuantity, setSelectedQuantity] = useState(null);
   const navigate = useNavigate();
@@ -22,14 +23,9 @@ const ProductDetailSection = () => {
     setSelectedImage(imageUrl);
   };
 
-  // if (isSingleLoading !== true) {
-  //   return <Loding />;
-  // }
-
   useEffect(() => {
     getSingleProduct(`${api}/singleProducts/${id}`);
   }, [id]);
-  console.log("data yaha hua mai", singleProduct, isSingleLoading);
 
   return (
     <div className="block lg:flex">

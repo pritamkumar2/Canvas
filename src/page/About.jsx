@@ -2,7 +2,7 @@ import React from "react";
 
 const About = () => {
   return (
-    <div>
+   <> <div>
       <div className="py-11">
         <div className="text-center flex flex-col gap-y-3 px-2 sm:mx-auto sm:max-w-xl">
           <p className="dark:text-gray-300">Get Started</p>
@@ -684,6 +684,7 @@ const About = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

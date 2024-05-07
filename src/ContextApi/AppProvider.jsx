@@ -19,6 +19,7 @@ const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchData = async (url) => {
+
     dispatch({ type: "SET_LOADING" });
     try {
       const response = await axios.get(url);
@@ -38,11 +39,14 @@ const AppProvider = ({ children }) => {
   };
 
   const getSingleProduct = async (url) => {
+    console.log("SET_SINGLE_LOADING");
+
     dispatch({ type: "SET_SINGLE_LOADING" });
 
     try {
       const response = await axios.get(url);
       const singleProduct = await response.data;
+
 
       dispatch({
         type: "SET_SINGLEPRODUCT_DATA",

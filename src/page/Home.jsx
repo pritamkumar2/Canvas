@@ -15,6 +15,7 @@ const Home = () => {
   const anime = products.filter((product) => product.category === "Anime");
 
   return (
+  
     <>
       <Carousel />
       <div className=" w-[95%] mx-auto space-y-5">

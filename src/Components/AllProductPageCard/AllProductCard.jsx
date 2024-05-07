@@ -5,6 +5,7 @@ import "./allProductPage.css";
 
 const AllProductCard = ({ product }) => {
   return (
+   
     <div className="productCard rounded-t-2xl shadow-xl w-full md:w-[15rem] mx-auto border m-3 transition-all cursor-pointer text-black">
       <div className="h-48 md:h-[20rem]">
         <img
