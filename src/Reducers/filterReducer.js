@@ -6,7 +6,42 @@ const filterReducer = (state, action) => {
         filter_products: action?.payload,
         all_products: action?.payload,
       };
+    // /////////////////////////////////////////////////////
+    case "SET_COLOR_FILTER":
+      const colors = action?.payload;
+      let filteredByColor;
 
+      if (colors.length === 0) {
+        filteredByColor = state?.all_products;
+      } else {
+        filteredByColor = state.all_products.filter((product) =>
+          colors.some((color) => product.colours.includes(color))
+        );
+      }
+
+      return {
+        ...state,
+        filter_products: filteredByColor,
+      };
+
+    case "SET_SIZE_FILTER":
+      const sizes = action?.payload;
+      let filteredBySize;
+
+      if (sizes.length === 0) {
+        filteredBySize = state?.all_products;
+      } else {
+        filteredBySize = state.all_products.filter((product) =>
+          sizes.some((size) => product?.size?.includes(size))
+        );
+      }
+
+      return {
+        ...state,
+        filter_products: filteredBySize,
+      };
+
+    // //////////////////////////////////////////////////////////////
     case "GET_SORT_VALUE":
       return {
         ...state,
