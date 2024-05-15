@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, NavLink } from "react-router-dom";
 import FormatPrice from "../../Helpers/FormatPrice";
 import { useAuth } from "../../ContextApi/AppProvider";
 import Loding from "../../PreLoading/Loding";
@@ -9,15 +9,31 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import AutoModeIcon from "@mui/icons-material/AutoMode";
 import StarRating from "../Review&Rating/StarRating";
 import "./productDetails.css";
+import { useCartContext } from "../../ContextApi/Cart_context";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Quantity from "../Quantity/Quantity";
 const ProductDetailSection = () => {
   const { id } = useParams();
   const { api, getSingleProduct, isSingleLoading, isLoading, singleProduct } =
     useAuth();
+
+  const { addToCart } = useCartContext();
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedQuantity, setSelectedQuantity] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(
+    singleProduct?.colours?.length === 1 ? singleProduct?.colours : null
+  );
+  const [quantity, setQuantity] = useState(1);
+
+  const amount = singleProduct?.price?.discount;
+
   const navigate = useNavigate();
-  const handleSelect = (quantity) => {
-    setSelectedQuantity(quantity);
+  const handleSelect = (size) => {
+    setSelectedSize(size);
+  };
+  const handleColorSelect = (colour) => {
+    setSelectedColor(colour);
   };
   const handleSelectImg = (imageUrl) => {
     setSelectedImage(imageUrl);
@@ -93,33 +109,59 @@ const ProductDetailSection = () => {
           <p className="py-2">{singleProduct?.description}</p>
         </div>
 
+        <div className="grid grid-cols-2">
+          {/* Colors */}
+          <div>
+            <h4 className="font-bold mt-4">Colours</h4>
+            <div className="flex justify-start">
+              <div className="flex flex-wrap gap-4 mb-3">
+                {singleProduct?.colours?.map((color, i) => (
+                  <div
+                    key={i}
+                    className={`border border-black rounded-full p-2 cursor-pointer ${
+                      selectedColor === color
+                        ? "border-gradient-blue border-2 shadow-outline"
+                        : ""
+                    }`}
+                    onClick={() => handleColorSelect(color)}
+                    style={{ backgroundColor: color }}
+                  ></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Quantity Selector */}
+        <Quantity
+          initialQuantity={1}
+          onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
+        />
         {/* size */}
-
         <div>
-          <h4 className="text-2xl font-bold  text-orange-400 mt-4">
+          <h4 className="text-2xl font-bold text-orange-400 mt-4">
             Select Size
           </h4>
         </div>
         <div className="flex justify-center mt-4">
           <div className="flex flex-wrap gap-4">
-            {[1, 2, 3, 4, 5]?.map((quantity) => (
+            {singleProduct?.size?.map((size, i) => (
               <div
-                key={quantity}
+                key={i}
                 className={`border border-black rounded-md p-2 cursor-pointer ${
-                  selectedQuantity === quantity
+                  selectedSize === size
                     ? "border-gradient-blue border-2 shadow-outline"
                     : ""
                 }`}
-                onClick={() => handleSelect(quantity)}
+                onClick={() => handleSelect(size)}
               >
-                <p>{quantity} X 1</p>
+                <p>{size}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* easy delivery */}
-        <div className="flex justify-center gap-6  mt-6">
+        <div className="flex justify-center gap-6  mt-2">
           <div>
             <div className="flex justify-center mt-6">
               <LocalShippingIcon />
@@ -145,6 +187,40 @@ const ProductDetailSection = () => {
             className="button-50 mt-6 w-full"
             role="button"
             onClick={() => {
+              if (!selectedSize) {
+                toast.warn("📏 Please select a size", {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                });
+                return;
+              }
+              if (!selectedColor && singleProduct?.colours?.length > 1) {
+                toast.warn("📏 Please select a color", {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                });
+                return;
+              }
+              addToCart(
+                singleProduct,
+                selectedSize,
+                selectedColor,
+                id,
+                amount,
+                quantity
+              );
               navigate("/Cart");
             }}
           >

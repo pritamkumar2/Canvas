@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useReducer } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import axios from "axios";
 import reducer from "../Reducers/ProductReducer";
 
@@ -17,9 +23,31 @@ const initialState = {
 
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [user, setUser] = useState(null);
+  const userDataUrl = `${api}/user`;
+
+  const userAuthentication = async () => {
+    try {
+      const response = await axios.get(userDataUrl, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      setUser(response.data); // Handle the response data
+    } catch (error) {
+      console.error(
+        "Error fetching user data:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    userAuthentication();
+  }, []);
 
   const fetchData = async (url) => {
-
     dispatch({ type: "SET_LOADING" });
     try {
       const response = await axios.get(url);
@@ -47,7 +75,6 @@ const AppProvider = ({ children }) => {
       const response = await axios.get(url);
       const singleProduct = await response.data;
 
-
       dispatch({
         type: "SET_SINGLEPRODUCT_DATA",
         payload: singleProduct,
@@ -62,8 +89,30 @@ const AppProvider = ({ children }) => {
     fetchData(productsApi);
   }, []);
 
+  let isLoggedIn = !!token;
+  const storeTokenInLs = (token) => {
+    setToken(token);
+    return localStorage.setItem("token", token);
+  };
+  const LogOutUser = () => {
+    setToken("");
+    return localStorage.removeItem("token");
+  };
+
+  // jwt auth - to get the current user data
   return (
-    <AppContext.Provider value={{ api, ...state, getSingleProduct }}>
+    <AppContext.Provider
+      value={{
+        api,
+        ...state,
+        getSingleProduct,
+        storeTokenInLs,
+        LogOutUser,
+        isLoggedIn,
+        token,
+        user,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

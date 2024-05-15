@@ -4,13 +4,22 @@ import FeedbackSection from "../../Components/Review&Rating/FeedbackSection";
 import RateSection from "../../Components/Review&Rating/RateSection";
 import ReviewsSection from "../../Components/Review&Rating/ReviewsSection";
 import ProductDetailSection from "../../Components/ProductDetail/ProductDetailSection";
-import SimilarProduct from "../../Components/SimilerProduct/SimilerProduct";
+import ProductGrid from "../../Components/ProductsPerPage/ProductsPerPage";
 import { useAuth } from "../../ContextApi/AppProvider";
+import { useParams } from "react-router-dom";
+
 const SingleProduct = () => {
   const [showRating, setShowRating] = useState(true);
   const [showReviews, setShowReviews] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const { products } = useAuth();
+  const { id } = useParams();
+
+  const currentProducts = products.find((product) => product._id === id);
+  const similarProducts = products.filter(
+    (product) =>
+      product.category === currentProducts.category && product._id !== id
+  );
 
   const handleRateClick = (e) => {
     e.preventDefault();
@@ -65,16 +74,12 @@ const SingleProduct = () => {
         <div className=" flex justify-center items-center mb-12">
           <h3 className="font-bold text-black">Similar Product</h3>
         </div>
-        {/* similer product */}
-        {products.map((product) => (
-          <SimilarProduct
-            key={product?._id}
-            imageUrl={product?.imageUrl}
-            name={product?.name}
-            price={product?.price}
-            brand={product?.brand}
-          />
-        ))}
+
+        <div className=" flex items-center justify-center lg:col-span-3 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 ">
+            <ProductGrid filter_products={similarProducts} />
+          </div>
+        </div>
       </div>
     </div>
   );

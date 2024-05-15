@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -20,13 +20,24 @@ import {
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { AcmeLogo } from "./AcmeLogo.jsx";
 import Searching from "../Components/Searching/Searching.jsx";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useCartContext } from "../ContextApi/Cart_context.jsx";
+import { useAuth } from "../ContextApi/AppProvider.jsx";
 export default function Navbars() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isLargeScreen, setIsLargeScreen] = React.useState(
     window.innerWidth > 721
   );
+  const [cartLength, setCartLength] = React.useState();
+  const navigate = useNavigate();
+  const { cart } = useCartContext();
+  const { isLoggedIn } = useAuth();
+  const isAuthenticated = isLoggedIn;
+  useEffect(() => {
+    setCartLength(cart.length);
+  }, [cart]);
 
+  console.log(cartLength);
   React.useEffect(() => {
     const handleResize = () => {
       setIsLargeScreen(window.innerWidth > 721);
@@ -50,6 +61,46 @@ export default function Navbars() {
     { label: "Help & Feedback", href: "/help" },
     { label: "Log Out", href: "/logout" },
   ];
+  const profileMenu = isAuthenticated ? (
+    <Dropdown placement="bottom-end">
+      <DropdownTrigger>
+        <Avatar
+          isBordered
+          as="button"
+          className="transition-transform"
+          color="secondary"
+          name="Jason Hughes"
+          size="sm"
+          src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+        />
+      </DropdownTrigger>
+
+      <DropdownMenu aria-label="Profile Actions" variant="flat">
+        <DropdownItem key="profile" className="h-14 gap-2">
+          <p className="font-semibold">Signed in as</p>
+          <p className="font-semibold">zoey@example.com</p>
+        </DropdownItem>
+        <DropdownItem
+          key="settings"
+          onClick={() => {
+            navigate("/myProfile");
+          }}
+        >
+          My Profile
+        </DropdownItem>
+        <DropdownItem key="team_settings">Team Settings</DropdownItem>
+        <DropdownItem key="analytics">Analytics</DropdownItem>
+        <DropdownItem key="system">System</DropdownItem>
+        <DropdownItem key="configurations">Configurations</DropdownItem>
+        <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+        <DropdownItem key="logout" color="danger">
+          <NavLink to="/logout" className="w-full">
+            Logout
+          </NavLink>
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  ) : null;
 
   return (
     <>
@@ -91,44 +142,28 @@ export default function Navbars() {
               <Searching />
             </NavbarContent>
 
-            <Dropdown placement="bottom-end">
-              <DropdownTrigger>
-                <Avatar
-                  isBordered
-                  as="button"
-                  className="transition-transform"
-                  color="secondary"
-                  name="Jason Hughes"
-                  size="sm"
-                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                />
-              </DropdownTrigger>
-
-              <DropdownMenu aria-label="Profile Actions" variant="flat">
-                <DropdownItem key="profile" className="h-14 gap-2">
-                  <p className="font-semibold">Signed in as</p>
-                  <p className="font-semibold">zoey@example.com</p>
-                </DropdownItem>
-                <DropdownItem key="settings">My Settings</DropdownItem>
-                <DropdownItem key="team_settings">Team Settings</DropdownItem>
-                <DropdownItem key="analytics">Analytics</DropdownItem>
-                <DropdownItem key="system">System</DropdownItem>
-                <DropdownItem key="configurations">Configurations</DropdownItem>
-                <DropdownItem key="help_and_feedback">
-                  Help & Feedback
-                </DropdownItem>
-                <DropdownItem key="logout" color="danger">
-                  Log Out
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            {profileMenu}
           </NavbarContent>
+
           <NavbarItem>
-            <NavLink to="/cart">
-              <div className="ml-24">
-                <LocalMallIcon />
+            {isAuthenticated ? (
+              <></>
+            ) : (
+              <div>
+                <NavLink to="/login">Login</NavLink>/
+                <NavLink to="/signup">Signup</NavLink>
               </div>
-            </NavLink>
+            )}
+          </NavbarItem>
+          <NavbarItem>
+            <NavbarItem className="ml-3 relative">
+              <NavLink to="/cart" className="flex items-center justify-center">
+                <LocalMallIcon />
+                <div className="absolute top-0 right-0 -mt-2 -mr-5 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold">
+                  {cartLength}
+                </div>
+              </NavLink>
+            </NavbarItem>
           </NavbarItem>
         </Navbar>
       ) : (

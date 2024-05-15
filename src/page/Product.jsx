@@ -9,12 +9,14 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+
 import { useAuth } from "../ContextApi/AppProvider";
 import { useFilterContext } from "../ContextApi/Filter_context";
-import AllProductCard from "../Components/AllProductPageCard/AllProductCard";
 import PriceSlider from "../Components/PriceSlider/PriceSlider";
 import Dropdowns from "../Components/Dropdowns/Dropdowns";
 import SizeDropdown from "../Components/Dropdowns/SizeDropdown";
+import ProductGrid from "../Components/ProductsPerPage/ProductsPerPage";
+
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
   { name: "Best Rating", href: "#", current: false },
@@ -22,7 +24,6 @@ const sortOptions = [
   { name: "Price: Low to High", href: "#", current: false },
   { name: "Price: High to Low", href: "#", current: false },
 ];
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -265,15 +266,8 @@ export default function Product() {
                   Clear Filters
                 </button>
               </form>
-              <div className="lg:col-span-3 w-full">
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
-                  {filter_products.map((products, i) => (
-                    <div key={products?._id} className="flex justify-center">
-                      <AllProductCard key={i} product={products} />
-                    </div>
-                  ))}
-                </div>
-              </div>
+            
+             <ProductGrid filter_products ={filter_products}/>
             </div>
           </section>
         </main>

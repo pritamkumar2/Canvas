@@ -8,10 +8,11 @@ import "./index.css";
 import AppProvider from "./ContextApi/AppProvider.jsx";
 import { ToastContainer } from "react-toastify";
 import { FilterContextProvider } from "./ContextApi/Filter_context.jsx";
-
+import { CartContextProvider } from "./ContextApi/Cart_context.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <AppProvider>
     <FilterContextProvider>
+    <CartContextProvider>
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         theme="colored"
       />
       <App />
+      </CartContextProvider>
     </FilterContextProvider>
   </AppProvider>
 );

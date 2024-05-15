@@ -69,7 +69,7 @@ const Searching = () => {
               key={product._id}
               className="py-2 cursor-pointer"
               onClick={() => {
-                navigate(`/products/${product._id}`);
+                navigate(`/products`);
               }}
             >
               <div className="flex items-center">

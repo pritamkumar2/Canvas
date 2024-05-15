@@ -1,12 +1,21 @@
 import React from "react";
 import { FaHeart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./allProductPage.css";
 
 const AllProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    // Navigate to the product detail page
+    navigate(`/SingleProduct/${product._id}`);
+  };
+
   return (
-   
-    <div className="productCard rounded-t-2xl shadow-xl w-full md:w-[15rem] mx-auto border m-3 transition-all cursor-pointer text-black">
+    <div
+      className="productCard rounded-t-2xl shadow-xl w-full md:w-[15rem] mx-auto border m-3 transition-all cursor-pointer text-black"
+      onClick={handleClick} // Handle click event for navigation
+    >
       <div className="h-48 md:h-[20rem]">
         <img
           className="h-full rounded-t-2xl w-full object-cover object-center"

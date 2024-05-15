@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useAuth } from "../ContextApi/AppProvider";
 import Axios from "axios";
 import { toast } from "react-toastify";
@@ -10,8 +10,8 @@ const Contact = () => {
     message: "",
     email: "",
   });
-  const { api } = useAuth();
-
+  const [userData, setUserData] = useState(true);
+  const { api, user } = useAuth();
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({
@@ -41,12 +41,11 @@ const Contact = () => {
           progress: undefined,
           theme: "colored",
         });
-        
       }
       console.log("Form submitted with values:", response);
     } catch (e) {
       console.log("error from frontend contact axios", e);
-      toast.warn(`😢 ${e.response.data.message}.`, {
+      toast.warn(`😢 ${e.response.data?.message}.`, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -59,6 +58,17 @@ const Contact = () => {
     }
   };
 
+  useEffect(() => {
+    if (userData && user) {
+      setFormData((prevData) => ({
+        ...prevData,
+        name: user.msg?.username,
+        email:  user.msg?.email,
+        message: "",
+      }));
+      setUserData(false);
+    }
+  }, [userData, user]);
   return (
     <>
       <section className="bg-white dark:bg-gray-900">

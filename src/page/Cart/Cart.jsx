@@ -1,148 +1,124 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./cart.css";
+import { useCartContext } from "../../ContextApi/Cart_context";
+import Quantity from "../../Components/Quantity/Quantity";
+import FormatPrice from "../../Helpers/FormatPrice";
+import CartItem from "../../Components/CartItem/CartItem";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Cart = () => {
   const navigate = useNavigate();
+  const { cart } = useCartContext();
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [totalAmountWithDiscount, setTotalAmountWithDiscount] = useState(null);
+
+  const promoCode = "LIGHTUP15";
+
+  const totalAmount = cart.reduce((total, item) => total + item.amount, 0);
+  const totalDiscount = cart.reduce(
+    (total, item) => total + item.product.discountPercent,
+    0
+  );
+  const averageDiscount = cart.length > 0 ? totalDiscount / cart.length : 0;
+
+  const handlePromo = () => {
+    if (promoCodeInput === promoCode) {
+      const discount = totalAmount * 0.15;
+      const discountedTotalAmount = totalAmount - discount;
+
+      toast.success("🥳 promo applied successfully !", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      console.log("Discounted Total Amount:", discountedTotalAmount);
+      setTotalAmountWithDiscount(discountedTotalAmount);
+    } else {
+      toast.error(" promo expired !", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+
   return (
-    <div class=" bg-white pt-20 ">
-      <div class="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0 mb-3">
-        <div class="rounded-lg md:w-2/3">
-          <div class="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
-            <img
-              src="https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-              alt="product-image"
-              class="w-full rounded-lg sm:w-40"
-            />
-            <div class="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-              <div class="mt-5 sm:mt-0">
-                <h2 class="text-lg font-bold text-gray-900">
-                  Nike Air Max 2019
-                </h2>
-                <p class="mt-1 text-xs text-gray-700">36EU - 4US</p>
-              </div>
-              <div class="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                <div class="flex items-center border-gray-100">
-                  <span class="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50">
-                    {" "}
-                    -{" "}
-                  </span>
-                  <input
-                    class="h-8 w-8 border bg-white text-center text-xs outline-none"
-                    type="number"
-                    value="2"
-                    min="1"
-                  />
-                  <span class="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50">
-                    {" "}
-                    +{" "}
-                  </span>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <p class="text-sm">259.000 ₭</p>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="h-5 w-5 cursor-pointer duration-150 hover:text-red-500"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
-            <img
-              src="https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1131&q=80"
-              alt="product-image"
-              class="w-full rounded-lg sm:w-40"
-            />
-            <div class="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-              <div class="mt-5 sm:mt-0">
-                <h2 class="text-lg font-bold text-gray-900">
-                  Nike Air Max 2019
-                </h2>
-                <p class="mt-1 text-xs text-gray-700">36EU - 4US</p>
-              </div>
-              <div class="mt-4 flex justify-between im sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                <div class="flex items-center border-gray-100">
-                  <span class="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50">
-                    {" "}
-                    -{" "}
-                  </span>
-                  <input
-                    class="h-8 w-8 border bg-white text-center text-xs outline-none"
-                    type="number"
-                    value="2"
-                    min="1"
-                  />
-                  <span class="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50">
-                    {" "}
-                    +{" "}
-                  </span>
-                </div>
-                <div class="flex items-center space-x-4">
-                  <p class="text-sm">259.000 ₭</p>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="h-5 w-5 cursor-pointer duration-150 hover:text-red-500"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className=" bg-white pt-20 ">
+      <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0 mb-3">
+        <div className="rounded-lg md:w-2/3">
+          {cart.map((product) => (
+            <CartItem key={product.id} product={product} />
+          ))}
         </div>
 
-        <div class="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
-          <div class="mb-2 flex justify-between">
-            <p class="text-gray-700">Subtotal</p>
-            <p class="text-gray-700">$129.99</p>
+        <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
+          <div className="mb-2 flex justify-between">
+            <p className="text-gray-700">subtotal</p>
+            <p className="text-gray-700">
+              <FormatPrice price={totalAmount} />
+            </p>
           </div>
-          <div class="flex justify-between">
-            <p class="text-gray-700">Shipping</p>
-            <p class="text-gray-700">$4.99</p>
+          <div className="flex justify-between">
+            <p className="text-gray-700">Shipping</p>
+            <p className="text-gray-700">
+              <FormatPrice price={0} />
+            </p>
           </div>
-          <div class="flex justify-between">
-            <p class="text-gray-700">discount</p>
-            <p class="text-gray-700">$1.99</p>
+          <div className="flex justify-between">
+            <p className="text-gray-700">discount</p>
+            <p className="text-green-700"> {averageDiscount} %</p>
           </div>
-          <hr class="my-4" />
-          <div class="flex justify-between">
-            <p class="text-lg font-bold">Total</p>
-            <div class="">
-              <p class="mb-1 text-lg font-bold">$134.98 USD</p>
-              <p class="text-sm text-gray-700">including VAT</p>
+          <hr className="my-4" />
+          <div className="flex justify-between">
+            <p className="text-lg font-bold">Total</p>
+            <div className="">
+              {totalAmountWithDiscount ? (
+                <>
+                  <p className="mb-1 text-lg font-bold text-green-700">
+                    {" "}
+                    <FormatPrice price={totalAmountWithDiscount} />
+                  </p>
+                  <p className="text-sm text-gray-700">including GST</p>
+                  <p className="mb-1 text-sm text-gray-500 line-through">
+                    <FormatPrice price={totalAmount} />
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="mb-1 text-lg font-bold text-green-700">
+                    {" "}
+                    <FormatPrice price={totalAmount} />
+                  </p>
+                  <p className="text-sm text-gray-700">including GST</p>
+                </>
+              )}
             </div>
           </div>
-          <label class="flex items-center mb-1.5 text-gray-400 text-sm font-medium">
+          <label className="flex items-center mb-1.5 text-gray-400 text-sm font-medium">
             Promo Code
           </label>
 
-          <div class="flex pb-4 w-full relative">
+          <div className="flex pb-4 w-full relative">
             <button
               id="dropdown-button"
               data-target="dropdown"
-              class="dropdown-toggle flex-shrink-0 z-10 inline-flex items-center py-4 px-4 text-base font-medium text-center text-gray-900 bg-transparent absolute left-0 top-0 pl-2  "
+              className="dropdown-toggle flex-shrink-0 z-10 inline-flex items-center py-4 px-4 text-base font-medium text-center text-gray-900 bg-transparent absolute left-0 top-0 pl-2  "
               type="button"
             >
               <svg
-                class="ml-2 my-auto"
+                className="ml-2 my-auto"
                 width="12"
                 height="7"
                 viewBox="0 0 12 7"
@@ -152,29 +128,44 @@ const Cart = () => {
                 <path
                   d="M1 1.5L4.58578 5.08578C5.25245 5.75245 5.58579 6.08579 6 6.08579C6.41421 6.08579 6.74755 5.75245 7.41421 5.08579L11 1.5"
                   stroke="#6B7280"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></path>
               </svg>
             </button>
             <input
               type="text"
-              class="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
+              className="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
               placeholder="xxxx xxxx xxxx"
+              value={promoCodeInput}
+              onChange={(e) => setPromoCodeInput(e.target.value)}
             />
 
-            <button className="ml-3 button-50">apply</button>
+            <button className="ml-3 button-50" onClick={handlePromo}>
+              apply
+            </button>
           </div>
 
           <button
-            class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
+            className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
             onClick={() => {
               navigate("/Cart/checkout");
             }}
           >
             Check out
           </button>
+          <div>
+            <button
+              className="cart-btn"
+              onClick={() => {
+                navigate("/products");
+              }}
+            >
+              <i className="animation"></i>continue shopping
+              <i class="animation"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
