@@ -7,8 +7,7 @@ import { useAuth } from "../ContextApi/AppProvider";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useCartContext } from "../ContextApi/Cart_context";
-import OAuthButtons from "./OAuthButtons";
-
+import OAuthButtons from "./OAuthButtonLogin";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -92,10 +91,14 @@ const Login = () => {
 
         <main className="main">
           <div>
-            <p>Log in with one of the following options.</p>
+           
             <OAuthButtons />
           </div>
-
+          <div className="flex items-center">
+            <div className="flex-1 border-b border-grey"></div>
+            <p className="mx-2 text-white">or</p>
+            <div className="flex-1 border-b border-grey"></div>
+          </div>
           <form className="form" onSubmit={handleLoginSubmit}>
             <div className="form__field">
               <label className="form__label" htmlFor="email">

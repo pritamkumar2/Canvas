@@ -31,7 +31,7 @@ export default function Navbars() {
   const [cartLength, setCartLength] = React.useState();
   const navigate = useNavigate();
   const { cart } = useCartContext();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const isAuthenticated = isLoggedIn;
   useEffect(() => {
     setCartLength(cart.length);
@@ -71,7 +71,7 @@ export default function Navbars() {
           color="secondary"
           name="Jason Hughes"
           size="sm"
-          src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+          src={user?.msg?.photoURL ? user?.msg?.photoURL : user?.msg?.username?.charAt(0)}
         />
       </DropdownTrigger>
 

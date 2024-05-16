@@ -83,7 +83,7 @@ const ProductDetailSection = () => {
       </div>
       {/* Product Details */}
       <div className="w-full lg:w-1/2 lg:px-12">
-        <h1 className="text-4xl">{singleProduct?.name}</h1>
+        <h1 className="text-4xl text-black">{singleProduct?.name}</h1>
         <div className="text-2xl text-orange-400">
           <FormatPrice price={singleProduct?.price?.discount} />
           <span className="ml-2 text-base line-through text-gray-400">

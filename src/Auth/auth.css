@@ -68,10 +68,6 @@ p {
 .button--full {
   width: 100%;
 }
-.button--full :hover {
-  background-image: linear-gradient(135deg, #ae1fd1, #bf2f9a);
- 
-}
 
 .button--primary {
   background-image: linear-gradient(135deg, #ae1fd1, #bf2f9a);

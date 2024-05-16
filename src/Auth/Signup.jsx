@@ -6,8 +6,7 @@ import { useAuth } from "../ContextApi/AppProvider";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useCartContext } from "../ContextApi/Cart_context";
-import OAuthButtons from "./OAuthButtons";
-
+import OAuthButtons from "./OAuthButtonLogin";
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -107,7 +106,12 @@ const Signup = () => {
         </header>
 
         <main className="main">
-        <OAuthButtons/>
+          <OAuthButtons />
+          <div className="flex items-center">
+            <div className="flex-1 border-b border-grey"></div>
+            <p className="mx-2 text-white">or</p>
+            <div className="flex-1 border-b border-grey"></div>
+          </div>
           <form className="form" onSubmit={handleRegisterSubmit}>
             <div className="form__field">
               <label className="form__label" htmlFor="name">
@@ -161,7 +165,7 @@ const Signup = () => {
             </div>
           </form>
 
-          <div className="text--center">
+          <div className="text--center text-white">
             <p>
               Already have an account? <a href="#">Log in</a>
             </p>

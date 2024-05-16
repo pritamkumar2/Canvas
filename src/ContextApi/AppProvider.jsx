@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import axios from "axios";
 import reducer from "../Reducers/ProductReducer";
-
 export const AppContext = createContext();
 
 const api = import.meta.env.VITE_BACKENDAPILINK;
@@ -24,9 +23,18 @@ const initialState = {
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [firetoken, setFireToken] = useState(localStorage.getItem("fireToken"));
+
   const [user, setUser] = useState(null);
   const userDataUrl = `${api}/user`;
+  const fireUserDataUrl = `${api}/fire`;
+  let isLoggedIn = !!token || !!firetoken;
+  console.log("i am user", user);
+  const googleLoginAuth = (data, token) => {
+    setFireToken(token);
+  };
 
+  // jwt auth - to get the current user data
   const userAuthentication = async () => {
     try {
       const response = await axios.get(userDataUrl, {
@@ -34,7 +42,7 @@ const AppProvider = ({ children }) => {
           Authorization: "Bearer " + token,
         },
       });
-      setUser(response.data); // Handle the response data
+      setUser(response.data);
     } catch (error) {
       console.error(
         "Error fetching user data:",
@@ -43,9 +51,26 @@ const AppProvider = ({ children }) => {
     }
   };
 
+  const fireUserAuthentication = async () => {
+    try {
+      const response = await axios.get(fireUserDataUrl, {
+        headers: {
+          Authorization: "Bearer " + firetoken,
+        },
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error(
+        "Error fetching Firebase user data:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   useEffect(() => {
     userAuthentication();
-  }, []);
+    fireUserAuthentication();
+  }, [firetoken]);
 
   const fetchData = async (url) => {
     dispatch({ type: "SET_LOADING" });
@@ -89,17 +114,21 @@ const AppProvider = ({ children }) => {
     fetchData(productsApi);
   }, []);
 
-  let isLoggedIn = !!token;
   const storeTokenInLs = (token) => {
     setToken(token);
     return localStorage.setItem("token", token);
   };
+
+  const storeFireTokenInLs = (token) => {
+    setFireToken(token);
+    return localStorage.setItem("fireToken", token);
+  };
   const LogOutUser = () => {
     setToken("");
-    return localStorage.removeItem("token");
+    setFireToken("");
+    return localStorage.removeItem("token", "fireToken");
   };
 
-  // jwt auth - to get the current user data
   return (
     <AppContext.Provider
       value={{
@@ -107,10 +136,12 @@ const AppProvider = ({ children }) => {
         ...state,
         getSingleProduct,
         storeTokenInLs,
+        storeFireTokenInLs,
         LogOutUser,
         isLoggedIn,
         token,
         user,
+        googleLoginAuth,
       }}
     >
       {children}
