@@ -12,7 +12,6 @@ import { CartContextProvider } from "./ContextApi/Cart_context.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <GoogleOAuthProvider clientId="989283184901-cil0ki7qvopgh5hat94vlj9riru2fjf9.apps.googleusercontent.com">
     <AppProvider>
       <FilterContextProvider>
         <CartContextProvider>
@@ -32,5 +31,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </CartContextProvider>
       </FilterContextProvider>
     </AppProvider>
-  </GoogleOAuthProvider>
 );

@@ -8,12 +8,17 @@ import CartItem from "../../Components/CartItem/CartItem";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
+
+
+
 const Cart = () => {
   const navigate = useNavigate();
   const { cart } = useCartContext();
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [totalAmountWithDiscount, setTotalAmountWithDiscount] = useState(null);
 
+ 
   const promoCode = "LIGHTUP15";
 
   const totalAmount = cart.reduce((total, item) => total + item.amount, 0);
@@ -28,7 +33,7 @@ const Cart = () => {
       const discount = totalAmount * 0.15;
       const discountedTotalAmount = totalAmount - discount;
 
-      toast.success("🥳 promo applied successfully !", {
+      toast.success("🥳 Promo applied successfully!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -38,10 +43,9 @@ const Cart = () => {
         progress: undefined,
         theme: "colored",
       });
-      console.log("Discounted Total Amount:", discountedTotalAmount);
       setTotalAmountWithDiscount(discountedTotalAmount);
     } else {
-      toast.error(" promo expired !", {
+      toast.error("Promo expired!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -54,8 +58,19 @@ const Cart = () => {
     }
   };
 
+  const handleCheckout = () => {
+    const checkoutData = {
+      cart,
+      totalAmount,
+      totalAmountWithDiscount: totalAmountWithDiscount || totalAmount,
+      averageDiscount,
+    };
+
+    navigate("/Cart/checkout");
+  };
+
   return (
-    <div className=" bg-white pt-20 ">
+    <div className="bg-white pt-20">
       <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0 mb-3">
         <div className="rounded-lg md:w-2/3">
           {cart.map((product) => (
@@ -65,7 +80,7 @@ const Cart = () => {
 
         <div className="mt-6 h-full rounded-lg border bg-white p-6 shadow-md md:mt-0 md:w-1/3">
           <div className="mb-2 flex justify-between">
-            <p className="text-gray-700">subtotal</p>
+            <p className="text-gray-700">Subtotal</p>
             <p className="text-gray-700">
               <FormatPrice price={totalAmount} />
             </p>
@@ -77,20 +92,19 @@ const Cart = () => {
             </p>
           </div>
           <div className="flex justify-between">
-            <p className="text-gray-700">discount</p>
-            <p className="text-green-700"> {averageDiscount} %</p>
+            <p className="text-gray-700">Discount</p>
+            <p className="text-green-700">{averageDiscount} %</p>
           </div>
           <hr className="my-4" />
           <div className="flex justify-between">
             <p className="text-lg font-bold">Total</p>
-            <div className="">
+            <div>
               {totalAmountWithDiscount ? (
                 <>
                   <p className="mb-1 text-lg font-bold text-green-700">
-                    {" "}
                     <FormatPrice price={totalAmountWithDiscount} />
                   </p>
-                  <p className="text-sm text-gray-700">including GST</p>
+                  <p className="text-sm text-gray-700">Including GST</p>
                   <p className="mb-1 text-sm text-gray-500 line-through">
                     <FormatPrice price={totalAmount} />
                   </p>
@@ -98,10 +112,9 @@ const Cart = () => {
               ) : (
                 <>
                   <p className="mb-1 text-lg font-bold text-green-700">
-                    {" "}
                     <FormatPrice price={totalAmount} />
                   </p>
-                  <p className="text-sm text-gray-700">including GST</p>
+                  <p className="text-sm text-gray-700">Including GST</p>
                 </>
               )}
             </div>
@@ -109,12 +122,10 @@ const Cart = () => {
           <label className="flex items-center mb-1.5 text-gray-400 text-sm font-medium">
             Promo Code
           </label>
-
           <div className="flex pb-4 w-full relative">
             <button
               id="dropdown-button"
-              data-target="dropdown"
-              className="dropdown-toggle flex-shrink-0 z-10 inline-flex items-center py-4 px-4 text-base font-medium text-center text-gray-900 bg-transparent absolute left-0 top-0 pl-2  "
+              className="dropdown-toggle flex-shrink-0 z-10 inline-flex items-center py-4 px-4 text-base font-medium text-center text-gray-900 bg-transparent absolute left-0 top-0 pl-2"
               type="button"
             >
               <svg
@@ -136,22 +147,18 @@ const Cart = () => {
             </button>
             <input
               type="text"
-              className="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
+              className="block w-full h-11 pr-11 pl-5 py-2.5 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400"
               placeholder="xxxx xxxx xxxx"
               value={promoCodeInput}
               onChange={(e) => setPromoCodeInput(e.target.value)}
             />
-
             <button className="ml-3 button-50" onClick={handlePromo}>
-              apply
+              Apply
             </button>
           </div>
-
           <button
             className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600"
-            onClick={() => {
-              navigate("/Cart/checkout");
-            }}
+            onClick={handleCheckout}
           >
             Check out
           </button>
@@ -162,8 +169,8 @@ const Cart = () => {
                 navigate("/products");
               }}
             >
-              <i className="animation"></i>continue shopping
-              <i class="animation"></i>
+              <i className="animation"></i> Continue shopping
+              <i className="animation"></i>
             </button>
           </div>
         </div>

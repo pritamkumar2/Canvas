@@ -2,7 +2,7 @@ import { signInWithPopup } from "firebase/auth";
 import { useAuth } from "../ContextApi/AppProvider";
 import { useCartContext } from "../ContextApi/Cart_context";
 import { useNavigate } from "react-router-dom";
-import { auth, provider, FacebookAuthProvider } from "../firebase";
+import { auth, provider } from "../firebase";
 import axios from "axios";
 const OAuthButtons = () => {
   const { googleLoginAuth, api, storeFireTokenInLs } = useAuth();
