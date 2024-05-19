@@ -8,17 +8,12 @@ import CartItem from "../../Components/CartItem/CartItem";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
-
-
 const Cart = () => {
   const navigate = useNavigate();
   const { cart } = useCartContext();
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [totalAmountWithDiscount, setTotalAmountWithDiscount] = useState(null);
 
- 
   const promoCode = "LIGHTUP15";
 
   const totalAmount = cart.reduce((total, item) => total + item.amount, 0);

@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react";
-import { useAuth } from "./AppProvider";
+import axios from "axios";
 import cartReducer from "../Reducers/cartReducer";
+import { useAuth } from "../ContextApi/AppProvider";
 
 const CartContext = createContext();
+
 const getLocalCartData = () => {
   let newCartData = localStorage.getItem("cart");
   if (!newCartData || newCartData === "[]") {
@@ -11,16 +13,33 @@ const getLocalCartData = () => {
     return JSON.parse(newCartData);
   }
 };
+
 const initialState = {
-  cart: getLocalCartData(),
+  cart: [],
   total_item: "",
   total_amount: "",
   shipping_fee: 50000,
 };
 
 export const CartContextProvider = ({ children }) => {
-  const { products } = useAuth();
   const [state, dispatch] = useReducer(cartReducer, initialState);
+  const { user } = useAuth();
+  const api = import.meta.env.VITE_BACKENDAPILINK; // Define your API endpoint
+
+  useEffect(() => {
+    const getCartData = async () => {
+      if (user?.msg?.id) {
+        try {
+          const response = await axios.get(`${api}/getCart/${user.msg.id}`);
+          dispatch({ type: "SET_CART", payload: response.data });
+        } catch (error) {
+          console.error("Failed to fetch cart data", error);
+        }
+      }
+    };
+
+    getCartData();
+  }, [user]);
 
   const addToCart = (
     singleProduct,
@@ -56,6 +75,7 @@ export const CartContextProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(state.cart));
   }, [state.cart]);
+
   return (
     <CartContext.Provider value={{ ...state, dispatch, addToCart, removeItem }}>
       {children}

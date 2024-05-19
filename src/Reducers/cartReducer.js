@@ -1,5 +1,11 @@
 const cartReducer = (state, action) => {
   switch (action.type) {
+    case "SET_CART": {
+      return {
+        ...state,
+        cart: action.payload,
+      };
+    }
     case "ADD_TO_CART": {
       const {
         singleProduct,
@@ -9,18 +15,18 @@ const cartReducer = (state, action) => {
         amount,
         quantity,
       } = action.payload;
-      const existingProductIndex = state?.cart.find(
-        (carItem) => carItem.id === id + selectedColor
+      const existingProduct = state.cart.find(
+        (cartItem) => cartItem.id === id + selectedColor
       );
 
-      if (existingProductIndex) {
+      if (existingProduct) {
         const updatedCart = state.cart.map((curElem) => {
-          if (curElem.id === existingProductIndex.id) {
-            const quantitys = curElem.quantity + quantity;
+          if (curElem.id === existingProduct.id) {
+            const newQuantity = curElem.quantity + quantity;
             const newAmount = curElem.amount + amount * quantity;
             return {
               ...curElem,
-              quantity: quantitys,
+              quantity: newQuantity,
               amount: newAmount,
             };
           }
@@ -36,7 +42,7 @@ const cartReducer = (state, action) => {
           id: id + selectedColor,
           name: singleProduct?.name,
           image: singleProduct?.imageUrl,
-          amount: amount * quantity, // Correct calculation here
+          amount: amount * quantity,
           size: selectedSize,
           colour: selectedColor,
           product: singleProduct,
@@ -65,22 +71,8 @@ const cartReducer = (state, action) => {
         cart: updatedCart,
       };
     }
+
     case "INCREASE_QUANTITY": {
-      const { id } = action.payload;
-
-      const updatedCart = state.cart.map((curElem) => {
-        if (curElem.id === id) {
-          const newQuantity = curElem.quantity + 1;
-          const newAmount = (curElem.amount * newQuantity) / curElem.quantity;
-          return {
-            ...curElem,
-            quantity: newQuantity,
-            amount: newAmount,
-          };
-        }
-        return curElem;
-      });
-
       return {
         ...state,
         cart: updatedCart,
@@ -111,4 +103,5 @@ const cartReducer = (state, action) => {
       return state;
   }
 };
+
 export default cartReducer;

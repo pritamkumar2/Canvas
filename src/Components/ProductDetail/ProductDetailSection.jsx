@@ -1,6 +1,5 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import FormatPrice from "../../Helpers/FormatPrice";
 import { useAuth } from "../../ContextApi/AppProvider";
 import Loding from "../../PreLoading/Loding";
@@ -13,42 +12,97 @@ import { useCartContext } from "../../ContextApi/Cart_context";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Quantity from "../Quantity/Quantity";
+import axios from "axios";
+
 const ProductDetailSection = () => {
   const { id } = useParams();
-  const { api, getSingleProduct, isSingleLoading, isLoading, singleProduct } =
+  const { api, getSingleProduct, isSingleLoading, singleProduct, user } =
     useAuth();
-
   const { addToCart } = useCartContext();
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(
-    singleProduct?.colours?.length === 1 ? singleProduct?.colours : null
+    singleProduct?.colours?.length === 1 ? singleProduct?.colours[0] : null
   );
   const [quantity, setQuantity] = useState(1);
 
   const amount = singleProduct?.price?.discount;
-
   const navigate = useNavigate();
-  const handleSelect = (size) => {
-    setSelectedSize(size);
-  };
-  const handleColorSelect = (colour) => {
-    setSelectedColor(colour);
-  };
-  const handleSelectImg = (imageUrl) => {
-    setSelectedImage(imageUrl);
-  };
+
+  const handleSelect = (size) => setSelectedSize(size);
+  const handleColorSelect = (color) => setSelectedColor(color);
+  const handleSelectImg = (imageUrl) => setSelectedImage(imageUrl);
 
   useEffect(() => {
     getSingleProduct(`${api}/singleProducts/${id}`);
   }, [id]);
 
+  const handleAddToCart = async () => {
+    const url = `${api}/addCart/${user?.msg?.id}`;
+    try {
+      if (!selectedSize) {
+        toast.warn("📏 Please select a size", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        return;
+      }
+      if (!selectedColor && singleProduct?.colours?.length > 1) {
+        toast.warn("📏 Please select a color", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        return;
+      }
+
+      const productId = selectedColor ? `${id}-${selectedColor}` : `${id}-null`; // Adjusting for null color
+      const data = {
+        id: productId,
+        name: singleProduct?.name,
+        image: singleProduct?.imageUrl,
+        amount: amount,
+        size: selectedSize,
+        colour: selectedColor,
+        product: id,
+        quantity: quantity,
+      };
+
+      const response = await axios.post(url, data);
+
+      if (response.status === 200 || response.status === 201) {
+        // addToCart(
+        //   singleProduct,
+        //   selectedSize,
+        //   selectedColor,
+        //   productId,
+        //   amount,
+        //   quantity
+        // );
+        navigate("/Cart");
+      } else {
+        console.log("Data not sent from productDetailSection");
+      }
+    } catch (e) {
+      console.log(e, "Error from productDetailSection axios ");
+    }
+  };
+
   return (
     <div className="block lg:flex">
       {/* Product Image and Details */}
       <div className="w-full lg:w-1/2">
-        {/* Product Image */}
-
         <div
           className="relative flex flex-wrap justify-center item-center"
           style={{ paddingBottom: "10.5%" }}
@@ -64,7 +118,6 @@ const ProductDetailSection = () => {
             />
           </div>
         </div>
-        {/* Additional Images */}
         <div className="-mx-2 flex flex-wrap">
           {[1, 2, 3, 4]?.map((_, index) => (
             <img
@@ -90,7 +143,6 @@ const ProductDetailSection = () => {
             <FormatPrice price={singleProduct?.price?.regular} />
           </span>
         </div>
-        {/* rate product  */}
         <div className="flex justify-start items-center">
           <div>
             <StarRating rating={singleProduct?.rating} />
@@ -99,7 +151,6 @@ const ProductDetailSection = () => {
             <p>({singleProduct?.comments?.length})</p>
           </div>
         </div>
-        {/* //////////////////////////////////////////////////// */}
         <br />
         <div className="mt-6 pt-6 border-t text-gray-700">
           <p className="py-2">
@@ -108,9 +159,7 @@ const ProductDetailSection = () => {
           </p>
           <p className="py-2">{singleProduct?.description}</p>
         </div>
-
         <div className="grid grid-cols-2">
-          {/* Colors */}
           <div>
             <h4 className="font-bold mt-4">Colours</h4>
             <div className="flex justify-start">
@@ -131,12 +180,10 @@ const ProductDetailSection = () => {
             </div>
           </div>
         </div>
-        {/* Quantity Selector */}
         <Quantity
           initialQuantity={1}
           onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
         />
-        {/* size */}
         <div>
           <h4 className="text-2xl font-bold text-orange-400 mt-4">
             Select Size
@@ -159,9 +206,7 @@ const ProductDetailSection = () => {
             ))}
           </div>
         </div>
-
-        {/* easy delivery */}
-        <div className="flex justify-center gap-6  mt-2">
+        <div className="flex justify-center gap-6 mt-2">
           <div>
             <div className="flex justify-center mt-6">
               <LocalShippingIcon />
@@ -174,7 +219,6 @@ const ProductDetailSection = () => {
             </div>
             <p className="ml-2 text-sm">easy Payment</p>
           </div>
-
           <div>
             <div className="flex justify-center mt-6">
               <AutoModeIcon />
@@ -186,43 +230,7 @@ const ProductDetailSection = () => {
           <button
             className="button-50 mt-6 w-full"
             role="button"
-            onClick={() => {
-              if (!selectedSize) {
-                toast.warn("📏 Please select a size", {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "colored",
-                });
-                return;
-              }
-              if (!selectedColor && singleProduct?.colours?.length > 1) {
-                toast.warn("📏 Please select a color", {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "colored",
-                });
-                return;
-              }
-              addToCart(
-                singleProduct,
-                selectedSize,
-                selectedColor,
-                id,
-                amount,
-                quantity
-              );
-              navigate("/Cart");
-            }}
+            onClick={handleAddToCart}
           >
             Add to cart
           </button>

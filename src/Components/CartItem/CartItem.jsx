@@ -1,13 +1,51 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useCartContext } from "../../ContextApi/Cart_context";
+import { useAuth } from "../../ContextApi/AppProvider";
 import Quantity from "../../Components/Quantity/Quantity";
 import FormatPrice from "../../Helpers/FormatPrice";
-import { useCartContext } from "../../ContextApi/Cart_context";
 
 const CartItem = ({ product }) => {
-  const { cart, dispatch } = useCartContext();
+  const { dispatch } = useCartContext();
   const [quantity, setQuantity] = useState(product.quantity);
-  const productPrice = product.amount;
-  console.log(quantity, cart, productPrice);
+  const { user, api } = useAuth();
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await axios.get(`${api}/getCart/${user?.msg?.id}`);
+        if (response.data.message === "Cart fetched successfully") {
+          // Dispatch the fetched cart items to the context
+          dispatch({
+            type: "SET_CART_ITEMS",
+            payload: response.data.cartItems,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch cart", error);
+      }
+    };
+
+    fetchCart();
+  }, [api, user?.msg?.id, dispatch]);
+
+  const handleRemoveItem = async (productId) => {
+    try {
+      const response = await axios.delete(
+        `${api}/removeCartItem/${user?.msg?.id}/${productId}`
+      );
+      if (response.data.message === "Item removed successfully") {
+        dispatch({ type: "REMOVE_ITEM", payload: { id: productId } });
+      } else {
+        console.error(
+          "Failed to remove item from cart:",
+          response.data.message
+        );
+      }
+    } catch (error) {
+      console.error("Failed to remove item from cart", error);
+    }
+  };
 
   return (
     <div className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
@@ -37,15 +75,14 @@ const CartItem = ({ product }) => {
         </div>
         <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
           <Quantity
-            initialQuantity={product?.quantity}
+            initialQuantity={product.quantity}
             onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
             products={product}
           />
           <div className="flex items-center space-x-4">
             <p className="text-sm">
-              <FormatPrice price={productPrice} />
+              <FormatPrice price={product.amount * quantity} />
             </p>
-
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -53,10 +90,7 @@ const CartItem = ({ product }) => {
               strokeWidth="1.5"
               stroke="currentColor"
               className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500"
-              onClick={() => {
-                console.log("click clicked", product.id);
-                dispatch({ type: "REMOVE_ITEM", payload: { id: product.id } });
-              }}
+              onClick={() => handleRemoveItem(product.id)}
             >
               <path
                 strokeLinecap="round"
