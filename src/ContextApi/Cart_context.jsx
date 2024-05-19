@@ -24,7 +24,8 @@ const initialState = {
 export const CartContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { user } = useAuth();
-  const api = import.meta.env.VITE_BACKENDAPILINK; // Define your API endpoint
+  const api = import.meta.env.VITE_BACKENDAPILINK;
+ 
 
   useEffect(() => {
     const getCartData = async () => {

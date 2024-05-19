@@ -55,7 +55,6 @@ const cartReducer = (state, action) => {
         };
       }
     }
-
     case "REMOVE_ITEM": {
       const { id: itemId } = action.payload;
       return {
@@ -63,7 +62,6 @@ const cartReducer = (state, action) => {
         cart: state.cart.filter((item) => item.id !== itemId),
       };
     }
-
     case "UPDATE_CART_ITEM": {
       const { cart: updatedCart } = action.payload;
       return {
@@ -71,34 +69,6 @@ const cartReducer = (state, action) => {
         cart: updatedCart,
       };
     }
-
-    case "INCREASE_QUANTITY": {
-      return {
-        ...state,
-        cart: updatedCart,
-      };
-    }
-
-    case "DECREASE_QUANTITY": {
-      const { id } = action.payload;
-      const updatedCart = state.cart
-        .map((curElem) => {
-          if (curElem.id === id && curElem.quantity > 1) {
-            const newAmount =
-              curElem.amount - curElem.amount / curElem.quantity;
-            return {
-              ...curElem,
-              quantity: curElem.quantity - 1,
-              amount: newAmount,
-            };
-          }
-          return curElem;
-        })
-        .filter((item) => item.quantity > 0);
-
-      return { ...state, cart: updatedCart };
-    }
-
     default:
       return state;
   }

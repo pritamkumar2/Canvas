@@ -2,11 +2,21 @@ import React, { useState } from "react";
 import { useCartContext } from "../../ContextApi/Cart_context";
 import axios from "axios";
 import { useAuth } from "../../ContextApi/AppProvider";
-
 const Quantity = ({ initialQuantity, onQuantityChange, products }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
   const { dispatch } = useCartContext();
   const { user, api } = useAuth();
+
+  const fetchUpdatedCart = async () => {
+    try {
+      const response = await axios.get(`${api}/getCart/${user?.msg?.id}`);
+      if (response.data.message === "Cart fetched successfully") {
+        dispatch({ type: "SET_CART", payload: response.data.cartItems });
+      }
+    } catch (error) {
+      console.error("Failed to fetch updated cart", error);
+    }
+  };
 
   const increaseQuantity = async () => {
     const id = products?.id;
@@ -16,16 +26,13 @@ const Quantity = ({ initialQuantity, onQuantityChange, products }) => {
       const response = await axios.patch(
         `${api}/increasequantity/${userId}/${id}`
       );
-
-      console.log("incressData ----", response.data.updatedCartItem.quantity);
-
+      console.log("Increase quantity response:", response.data);
       if (response.data.message === "Item quantity increased") {
-        setQuantity((prevQuantity) => {
-          const newQuantity = response?.data?.updatedCartItem?.quantity;
-          onQuantityChange(newQuantity);
-          return newQuantity;
-        });
-        dispatch({ type: "INCREASE_QUANTITY", payload: { id } });
+        const newQuantity = response.data.updatedCartItem.quantity;
+        setQuantity(newQuantity);
+        console.log("New quantity after increase:", newQuantity);
+        onQuantityChange(newQuantity);
+        await fetchUpdatedCart();
       }
     } catch (error) {
       console.error("Failed to increase quantity", error);
@@ -41,13 +48,13 @@ const Quantity = ({ initialQuantity, onQuantityChange, products }) => {
         const response = await axios.patch(
           `${api}/decreasequantity/${userId}/${id}`
         );
+        console.log("Decrease quantity response:", response.data);
         if (response.data.message === "Item quantity decreased") {
-          setQuantity((prevQuantity) => {
-            const newQuantity = response?.data?.updatedCartItem?.quantity;
-            onQuantityChange(newQuantity);
-            return newQuantity;
-          });
-          dispatch({ type: "DECREASE_QUANTITY", payload: { id } });
+          const newQuantity = response.data.cartItem.quantity;
+          setQuantity(newQuantity);
+          console.log("New quantity after decrease:", newQuantity);
+          onQuantityChange(newQuantity);
+          await fetchUpdatedCart();
         }
       } catch (error) {
         console.error("Failed to decrease quantity", error);

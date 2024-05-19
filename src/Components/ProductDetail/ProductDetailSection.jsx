@@ -11,8 +11,8 @@ import "./productDetails.css";
 import { useCartContext } from "../../ContextApi/Cart_context";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Quantity from "../Quantity/Quantity";
 import axios from "axios";
+import QuantityProduct from "../QuantityProduct/QuantityProduct";
 
 const ProductDetailSection = () => {
   const { id } = useParams();
@@ -67,7 +67,7 @@ const ProductDetailSection = () => {
         return;
       }
 
-      const productId = selectedColor ? `${id}-${selectedColor}` : `${id}-null`; // Adjusting for null color
+      const productId = selectedColor ? `${id}-${selectedColor}` : `${id}-null`;
       const data = {
         id: productId,
         name: singleProduct?.name,
@@ -82,14 +82,6 @@ const ProductDetailSection = () => {
       const response = await axios.post(url, data);
 
       if (response.status === 200 || response.status === 201) {
-        // addToCart(
-        //   singleProduct,
-        //   selectedSize,
-        //   selectedColor,
-        //   productId,
-        //   amount,
-        //   quantity
-        // );
         navigate("/Cart");
       } else {
         console.log("Data not sent from productDetailSection");
@@ -97,6 +89,10 @@ const ProductDetailSection = () => {
     } catch (e) {
       console.log(e, "Error from productDetailSection axios ");
     }
+  };
+
+  const handleQuantityChange = (newQuantity) => {
+    setQuantity(newQuantity);
   };
 
   return (
@@ -180,10 +176,7 @@ const ProductDetailSection = () => {
             </div>
           </div>
         </div>
-        <Quantity
-          initialQuantity={1}
-          onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
-        />
+        <QuantityProduct onQuantityChange={handleQuantityChange} />
         <div>
           <h4 className="text-2xl font-bold text-orange-400 mt-4">
             Select Size
