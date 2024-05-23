@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./cart.css";
 import { useCartContext } from "../../ContextApi/Cart_context";
@@ -13,20 +13,27 @@ const Cart = () => {
   const { cart } = useCartContext();
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [totalAmountWithDiscount, setTotalAmountWithDiscount] = useState(null);
+  const [totalAmounts, setTotalAmount] = useState();
+  const [totalDiscount, setTotalDiscount] = useState();
+  const [avgDiscount, setAvgDiscount] = useState();
 
   const promoCode = "LIGHTUP15";
-
-  const totalAmount = cart.reduce((total, item) => total + item.amount, 0);
-  const totalDiscount = cart.reduce(
-    (total, item) => total + item.product.discountPercent,
-    0
-  );
-  const averageDiscount = cart.length > 0 ? totalDiscount / cart.length : 0;
+  useEffect(() => {
+    const totalAmount = cart?.reduce((total, item) => total + item.amount, 0);
+    setTotalAmount(totalAmount);
+    const totalDiscount = cart?.reduce(
+      (total, item) => total + item.product.discountPercent,
+      0
+    );
+    setTotalDiscount(totalDiscount);
+    const averageDiscount = cart.length > 0 ? totalDiscount / cart.length : 0;
+    setAvgDiscount(averageDiscount);
+  }, [cart]);
 
   const handlePromo = () => {
     if (promoCodeInput === promoCode) {
-      const discount = totalAmount * 0.15;
-      const discountedTotalAmount = totalAmount - discount;
+      const discount = totalAmounts * 0.15;
+      const discountedTotalAmount = totalAmounts - discount;
 
       toast.success("🥳 Promo applied successfully!", {
         position: "top-right",
@@ -56,9 +63,9 @@ const Cart = () => {
   const handleCheckout = () => {
     const checkoutData = {
       cart,
-      totalAmount,
-      totalAmountWithDiscount: totalAmountWithDiscount || totalAmount,
-      averageDiscount,
+      totalAmounts,
+      totalAmountWithDiscount: totalAmountWithDiscount || totalAmounts,
+      totalDiscount,
     };
 
     navigate("/Cart/checkout");
@@ -77,7 +84,7 @@ const Cart = () => {
           <div className="mb-2 flex justify-between">
             <p className="text-gray-700">Subtotal</p>
             <p className="text-gray-700">
-              <FormatPrice price={totalAmount} />
+              <FormatPrice price={totalAmounts} />
             </p>
           </div>
           <div className="flex justify-between">
@@ -88,7 +95,7 @@ const Cart = () => {
           </div>
           <div className="flex justify-between">
             <p className="text-gray-700">Discount</p>
-            <p className="text-green-700">{averageDiscount} %</p>
+            <p className="text-green-700">{avgDiscount} %</p>
           </div>
           <hr className="my-4" />
           <div className="flex justify-between">
@@ -101,13 +108,13 @@ const Cart = () => {
                   </p>
                   <p className="text-sm text-gray-700">Including GST</p>
                   <p className="mb-1 text-sm text-gray-500 line-through">
-                    <FormatPrice price={totalAmount} />
+                    <FormatPrice price={totalAmounts} />
                   </p>
                 </>
               ) : (
                 <>
                   <p className="mb-1 text-lg font-bold text-green-700">
-                    <FormatPrice price={totalAmount} />
+                    <FormatPrice price={totalAmounts} />
                   </p>
                   <p className="text-sm text-gray-700">Including GST</p>
                 </>
